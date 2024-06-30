@@ -1,0 +1,55 @@
+@using e_commerce_store.ViewModels
+@model RegisterViewModel
+@{
+    Layout = "_LoginLayout";    
+    ViewData["Title"] = "Register";
+}
+
+<div class="container">
+    <div class="wrapper">
+        @if (TempData["Error"] != null)
+        {
+            <div class="col-md-12 alert alert-danger">
+                <span><b>Sorry!</b> - @TempData["Error"] </span>
+            </div>
+        }
+        <form asp-action="Register" asp-controller="Account">
+        <h1>Register</h1>
+        <div class="input-box">
+            <input asp-for="Name" type="text" placeholder="Name" required>
+            <span asp-validation-for="Name" class="text-danger"></span>
+            <i class='bx bxs-user'></i>
+        </div>
+        <div class="input-box">
+            <input asp-for="UserName" type="text" placeholder="username" required>
+            <span asp-validation-for="UserName" class="text-danger"></span>
+            <i class='bx bxs-user'></i>
+        </div>
+        <div class="input-box">
+            <input asp-for="EmailAddress" type="email" placeholder="email" required>
+            <span asp-validation-for="EmailAddress" class="text-danger"></span>
+            <i class='bx bxs-envelope'></i>
+        </div>
+        <div class="input-box">
+            <input asp-for="PhoneNumber" type="number" placeholder="phone number (optional)">
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            <i class='bx bxs-phone'></i>
+        </div>
+        <div class="input-box">
+            <input asp-for="Password" type="password" placeholder="password" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$" title="Password must be between 8 and 16 characters long and contain at least one uppercase letter, one lowercase letter, and one number">
+            <span asp-validation-for="Password" class="text-danger"></span>
+            <i class='bx bxs-lock-alt'></i>
+        </div>
+        <div class="input-box">
+            <input asp-for="ConfirmPassword" type="password" placeholder="confirm password" required>
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            <i class='bx bxs-lock-alt'></i>
+        </div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <button type="submit" class="btn">Register</button>
+        <div class="register-link">
+            <p>Do you have an account ? <a asp-action="Login">login</a></p>
+        </div> 
+        </form>
+    </div>
+</div>

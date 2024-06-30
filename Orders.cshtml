@@ -1,0 +1,118 @@
+@using e_commerce_store.ViewModels
+@model IndexOrderViewModel
+
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Orders";
+}
+
+
+<div class="top-filter">
+    <div class="filter-container">
+        <form asp-action="Orders" asp-controller="Dashboard" method="get">
+            <div class="from-group">
+                <label>Find by name: </label>
+                <input type="text" name="SearchString" id="SearchString" class="search" placeholder="Enter name..." value="@Model.searchString" />
+                <input type="submit" value="Search" class="filter-btn" />
+                <input type="hidden" name="page" value="1" />
+                <input type="hidden" name="pageSize" value="@Model.PageSize" />            </div>
+        </form>
+    </div>
+</div>
+
+<div class="content">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Total Price</th>
+                    <th>City</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Orders != null)
+                {
+                    @foreach (var item in Model.Orders)
+                    {
+                        <tr id="row_@item.Id">
+                            <td>@item.FirstName @item.LastName</td>
+                            <td>@item.Address</td>
+                            <td>@item.TotalPrice</td>
+                            <td>@item.City</td>
+                            <td>@item.Status</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a type="button" class="btn btn-sm btn-outline-secondary" asp-controller="Order" asp-action="Detail" asp-route-id="@item.Id">View</a>
+                                    <a type="button" class="btn btn-sm btn-outline-secondary" asp-controller="Order" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                    <a type="button" onclick="deleteOrder('@item.Id')"  class="btn btn-sm btn-outline-secondary">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div>
+    <div class="col-md-12">
+        <div aria-label="Page navigation example" class="bottom">
+            <ul class="pagination">
+                @if (Model.Page > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Orders", new {searchString = Model.searchString, page = Model.Page - 1 ,pageSize = Model.PageSize })">Previous</a>
+                    </li>
+                }
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item">
+                        <a class="page-link @(i == Model.Page ? "active-number" : "")" href="@Url.Action("Ordes", new {searchString = Model.searchString , page = i, pageSize = Model.PageSize })">@i</a>
+                    </li>
+                }
+                @if (Model.Page < Model.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Ordes", new {searchString = Model.searchString, page = Model.Page + 1 ,pageSize = Model.PageSize })">Next</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+@* <div class="row">
+    <div class="col-md-12">
+        <a type="button" class="btn btn-primary" asp-controller="Order" asp-action="Create">Add</a>
+    </div>
+</div> *@
+
+
+<script>
+    function deleteOrder(orderId) {
+        var params = 'id='+encodeURIComponent(orderId);
+        console.log(params);
+        fetch('/Order/Delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: params
+        }).then(function (response) {
+            if (response.ok) {
+                var row = document.getElementById('row_'+orderId);
+                row.remove();
+            } else {
+                alert('Failed to delete the order.');
+            }
+        }).catch(function (error) {
+            console.error('Error:', error);
+        });
+    }
+</script>
